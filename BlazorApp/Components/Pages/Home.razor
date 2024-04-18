@@ -1,33 +1,97 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@using Components
-@using System
 
-<h3>Todo (@todos.Count(todo => !todo.IsDone))</h3>
+
+<h3>Pöördumised (Kokku: @todos.Count(todo => !todo.IsDone))</h3>
 
 <div class="container">
-    <ul class="list-group">
+
+
+
+    <div class="row">
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Kirjelda pöördumist" @bind="newTodo" @onkeyup="HandleKeyUp">
+        </div>
+        <div class="col">
+            <InputDate @bind-Value="deadLineDate" />
+            <input type="time" @bind=deadLineTime />
+            <button class="btn btn-outline-secondary" @onclick="AddTodo">Lisa</button>
+        </div>
+        
+    </div>
+
+
+    <ul class="list-group list-group-flush">
+        <div class="container text-center">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    Kirjeldus
+                </div>
+                <div class="col-2">
+                    Loomiskuupäev
+                </div>
+                <div class="col-2">
+                    Tähtaeg
+                </div>
+            </div>
+        </div>
         @foreach (var todo in sort(todos))
         {
             @if (todo.IsDone == false)
             {
                 @if (todo.Deadline <= DateTime.Now.AddHours(1))
             {
-                    <li class="list-group-item list-group-item-danger">
-                        <p class="text-justify">
-                            <input type="checkbox" @bind="todo.IsDone" />
-                            @todo.Title @todo.Deadline
-                        </p>
-                    </li>
+                    <div class="text-justify">
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <li class="list-group-item list-group-item-danger">
+                                    
+                                        <input type="checkbox" @bind="todo.IsDone" />
+                                        @todo.Title
+                                    
+                                </li>           
+                            </div>
+                            <div class="col-2">
+                                <p class="text-justify">
+                                   
+                                    @todo.TimeCreated
+                                </p>
+                            </div>
+                            <div class="col-2">
+                                <p class="text-justify">
+                                    
+                                    @todo.Deadline
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 }
                 else
                 {
-                    <li class="list-group-item list-group-item-success">
+            <div class="text-justify">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <li class="list-group-item list-group-item-success">
+                          
+                                <input type="checkbox" @bind="todo.IsDone" />
+                                        @todo.Title
+                           
+                        </li>
+                    </div>
+                    <div class="col-2">
                         <p class="text-justify">
-                            <input type="checkbox" @bind="todo.IsDone" />
-                            @todo.Title @todo.Deadline
+
+                                    @todo.TimeCreated
                         </p>
-                    </li>
+                    </div>
+                    <div class="col-2">
+                        <p class="text-justify">
+
+                                    @todo.Deadline
+                        </p>
+                    </div>
+                </div>
+            </div>
                 }
 
             }
@@ -36,12 +100,7 @@
 
     </ul>
 
-    <input @bind="newTodo" @onkeyup="HandleKeyUp" />
-    <InputDate @bind-Value="deadLineDate" />
-    <input type="time" @bind=deadLineTime/>
     
-
-    <button @onclick="AddTodo">Add todo</button>
 
 </div>
 
@@ -53,8 +112,8 @@
 @code {
     private List<TodoItem> todos = new();
     string newTodo = "";
-    DateTime deadLineDate = new();
-    DateTime deadLineTime = new ();
+    DateTime deadLineDate = DateTime.Now;
+    DateTime deadLineTime = DateTime.Now;
 
     public void AddTodo()
     {
